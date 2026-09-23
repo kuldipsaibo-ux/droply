@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Droply — Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #050914;
+  color: white;
+  font-family: "DM Sans", sans-serif;
+}
+
+body:before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 75% 10%, rgba(112,62,255,.18), transparent 30%),
+    radial-gradient(circle at 15% 55%, rgba(65,40,180,.12), transparent 30%);
+  z-index: -1;
+}
+
+.nav {
+  height: 72px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(5,9,20,.82);
+  backdrop-filter: blur(18px);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.logo-mark {
+  width: 31px;
+  height: 24px;
+  border-radius: 6px 3px 6px 3px;
+  background: linear-gradient(135deg,#6c58ff,#bf38ff);
+  transform: rotate(-28deg);
+  position: relative;
+}
+
+.logo-mark:after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #101326;
+  border-radius: 50%;
+  top: 6px;
+  right: 6px;
+}
+
+.logout {
+  border: 1px solid #303a59;
+  background: #151d35;
+  color: white;
+  padding: 9px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 55px 22px;
+}
+
+.welcome {
+  margin-bottom: 35px;
+}
+
+.welcome h1 {
+  margin: 0;
+  font-size: 38px;
+  letter-spacing: -1.5px;
+}
+
+.welcome p {
+  color: #858da6;
+  margin-top: 8px;
+}
+
+.card {
+  padding: 25px;
+  border-radius: 20px;
+  background: rgba(13,20,39,.88);
+  border: 1px solid rgba(121,143,196,.22);
+  margin-bottom: 25px;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.alert {
+  padding: 18px;
+  margin-top: 12px;
+  border-radius: 14px;
+  background: #0b1124;
+  border: 1px solid #202b47;
+}
+
+.alert-url {
+  color: #cfd3e1;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.alert-price {
+  color: #54e5a8;
+  font-weight: 800;
+  margin-top: 7px;
+}
+
+.empty {
+  color: #717b94;
+  font-size: 14px;
+}
+
+#createAlert {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 12px 18px;
+  border-radius: 11px;
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  background: linear-gradient(90deg,#6654ff,#ad3cff);
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+
+  <div class="logo">
+    <div class="logo-mark"></div>
+    Droply
+  </div>
+
+  <button class="logout" id="logoutBtn">
+    Logout
+  </button>
+
+</header>
+
+<main class="container">
+
+  <div class="welcome">
+    <h1>Welcome back 👋</h1>
+    <p id="userEmail">Loading your account...</p>
+  </div>
+
+  <div class="card">
+
+    <h2>My Price Alerts</h2>
+
+    <div id="alerts">
+      <div class="empty">
+        Loading your alerts...
+      </div>
+    </div>
+
+    <a href="index.html#tracker" id="createAlert">
+      + Create Price Alert
+    </a>
+
+  </div>
+
+</main>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAuQvRtusTqOmb_tA0xQm12VJPQQYnvzfA",
+
+  authDomain: "droply-fa6f6.firebaseapp.com",
+
+  projectId: "droply-fa6f6",
+
+  storageBucket: "droply-fa6f6.firebasestorage.app",
+
+  messagingSenderId: "993632750410",
+
+  appId: "1:993632750410:web:373d3d6399ad705d874fb3",
+
+  measurementId: "G-MQ7JRR824Q"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+const userEmail =
+  document.getElementById("userEmail");
+
+const alerts =
+  document.getElementById("alerts");
+
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (!user) {
+
+    window.location.href = "login.html";
+
+    return;
+
+  }
+
+
+  userEmail.textContent =
+    user.email;
+
+
+  try {
+
+    const alertsQuery =
+      query(
+        collection(db, "priceAlerts"),
+        where("userId", "==", user.uid)
+      );
+
+
+    const snapshot =
+      await getDocs(alertsQuery);
+
+
+    if (snapshot.empty) {
+
+      alerts.innerHTML =
+        '<div class="empty">You have no price alerts yet.</div>';
+
+      return;
+
+    }
+
+
+    alerts.innerHTML = "";
+
+
+    snapshot.forEach((doc) => {
+
+      const data = doc.data();
+
+      const alert = document.createElement("div");
+
+      alert.className = "alert";
+
+      alert.innerHTML = `
+
+        <div class="alert-url">
+          ${data.productUrl || "Product"}
+        </div>
+
+        <div class="alert-price">
+          Target price: ₹${data.targetPrice}
+        </div>
+
+      `;
+
+      alerts.appendChild(alert);
+
+    });
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alerts.innerHTML =
+      '<div class="empty">Could not load your alerts.</div>';
+
+  }
+
+});
+
+
+document
+.getElementById("logoutBtn")
+.addEventListener("click", async () => {
+
+  await signOut(auth);
+
+  window.location.href =
+    "index.html";
+
+});
+
+</script>
+
+</body>
+</html>
