@@ -73,10 +73,28 @@ async function sendEmail(to, product, currentPrice, targetPrice) {
       subject: "🚨 Droply: Price dropped!",
       html: `
         <h2>🚨 Price Drop!</h2>
+
         <p><strong>${product.title}</strong></p>
-        <p>Current price: <strong>₹${currentPrice}</strong></p>
-        <p>Your target: <strong>₹${targetPrice}</strong></p>
-        <p><a href="${product.url}">View product</a></p>
+
+        <p>
+          Current price:
+          <strong>₹${currentPrice}</strong>
+        </p>
+
+        <p>
+          Your target:
+          <strong>₹${targetPrice}</strong>
+        </p>
+
+        <p>
+          <a href="${product.url}">
+            View product on Amazon
+          </a>
+        </p>
+
+        <p>
+          — Droply
+        </p>
       `
     })
   });
@@ -117,19 +135,28 @@ async function checkAlerts() {
       if (product.price <= Number(alert.targetPrice)) {
         console.log("🚨 PRICE DROP!");
 
-        if (alert.email) {
-          await sendEmail(
-            alert.email,
-            product,
-            product.price,
-            alert.targetPrice
-          );
-        } else {
-          console.log("⚠️ No email address saved for this alert.");
+        if (!alert.email) {
+          console.log("⚠️ No email address saved.");
+          continue;
         }
+
+        await sendEmail(
+          alert.email,
+          product,
+          product.price,
+          alert.targetPrice
+        );
+
+        await doc.ref.update({
+          status: "triggered",
+          triggeredAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        console.log("✅ Alert marked as triggered.");
       } else {
         console.log("🟡 No price drop yet.");
       }
+
     } catch (error) {
       console.error("Price check failed:", error.message);
     }
