@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Log in — Droply</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "DM Sans", sans-serif;
+  color: white;
+  background:
+    radial-gradient(circle at 75% 20%, rgba(112,62,255,.22), transparent 30%),
+    radial-gradient(circle at 20% 80%, rgba(73,46,190,.13), transparent 30%),
+    #050914;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+}
+
+.page {
+  width: 100%;
+  max-width: 430px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 11px;
+  font-size: 29px;
+  font-weight: 800;
+  margin-bottom: 45px;
+}
+
+.logo-mark {
+  width: 31px;
+  height: 24px;
+  border-radius: 6px 3px 6px 3px;
+  background: linear-gradient(135deg,#6c58ff,#bf38ff);
+  transform: rotate(-28deg);
+  position: relative;
+}
+
+.logo-mark:after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #101326;
+  border-radius: 50%;
+  top: 6px;
+  right: 6px;
+}
+
+.card {
+  padding: 34px;
+  border-radius: 25px;
+  background: rgba(13,20,39,.88);
+  border: 1px solid rgba(121,143,196,.22);
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.45),
+    inset 0 1px rgba(255,255,255,.03);
+}
+
+h1 {
+  margin: 0;
+  font-size: 31px;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  margin: 9px 0 27px;
+  color: #858da6;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.input {
+  width: 100%;
+  height: 51px;
+  padding: 0 15px;
+  margin-top: 11px;
+  border-radius: 11px;
+  border: 1px solid #2d3755;
+  background: #080f22;
+  color: white;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.input::placeholder {
+  color: #777f98;
+}
+
+.input:focus {
+  border-color: #8065ff;
+  box-shadow: 0 0 0 3px rgba(128,101,255,.08);
+}
+
+.button {
+  width: 100%;
+  height: 51px;
+  margin-top: 15px;
+  border: 0;
+  border-radius: 11px;
+  color: white;
+  background: linear-gradient(90deg,#6654ff,#ad3cff);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(116,59,255,.2);
+}
+
+.button.secondary {
+  margin-top: 10px;
+  background: #151d35;
+  border: 1px solid #303a59;
+  box-shadow: none;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 21px 0 3px;
+  color: #626b83;
+  font-size: 11px;
+}
+
+.divider:before,
+.divider:after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: #273149;
+}
+
+.message {
+  text-align: center;
+  min-height: 18px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+.back {
+  display: block;
+  text-align: center;
+  margin-top: 24px;
+  color: #858da6;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.back:hover {
+  color: white;
+}
+
+.note {
+  text-align: center;
+  margin-top: 22px;
+  color: #626b83;
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="logo">
+    <div class="logo-mark"></div>
+    Droply
+  </div>
+
+  <div class="card">
+
+    <h1>Welcome back</h1>
+
+    <div class="subtitle">
+      Keep your products under watch.
+      We'll tell you when the price drops.
+    </div>
+
+    <input
+      class="input"
+      id="email"
+      type="email"
+      placeholder="Email address"
+    >
+
+    <input
+      class="input"
+      id="password"
+      type="password"
+      placeholder="Password"
+    >
+
+    <button class="button" id="loginBtn">
+      Log in →
+    </button>
+
+    <div class="divider">OR</div>
+
+    <button class="button secondary" id="signupBtn">
+      Create account
+    </button>
+
+    <div class="message" id="message"></div>
+
+  </div>
+
+  <a class="back" href="index.html">
+    ← Back to Droply
+  </a>
+
+  <div class="note">
+    Set the price. Forget the product. ✦
+  </div>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAuQvRtusTqOmb_tA0xQm12VJPQQYnvzfA",
+
+  authDomain: "droply-fa6f6.firebaseapp.com",
+
+  projectId: "droply-fa6f6",
+
+  storageBucket: "droply-fa6f6.firebasestorage.app",
+
+  messagingSenderId: "993632750410",
+
+  appId: "1:993632750410:web:373d3d6399ad705d874fb3",
+
+  measurementId: "G-MQ7JRR824Q"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+const email =
+  document.getElementById("email");
+
+const password =
+  document.getElementById("password");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const signupBtn =
+  document.getElementById("signupBtn");
+
+const message =
+  document.getElementById("message");
+
+
+loginBtn.addEventListener("click", async () => {
+
+  const emailValue = email.value.trim();
+  const passwordValue = password.value;
+
+  if (!emailValue || !passwordValue) {
+
+    message.style.color = "#ff6b9d";
+
+    message.textContent =
+      "Enter your email and password.";
+
+    return;
+  }
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      emailValue,
+      passwordValue
+    );
+
+    message.style.color = "#54e5a8";
+
+    message.textContent =
+      "Logged in!";
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 600);
+
+  } catch (error) {
+
+    message.style.color = "#ff6b9d";
+
+    message.textContent =
+      "Invalid email or password.";
+
+  }
+
+});
+
+
+signupBtn.addEventListener("click", async () => {
+
+  const emailValue = email.value.trim();
+  const passwordValue = password.value;
+
+  if (!emailValue || !passwordValue) {
+
+    message.style.color = "#ff6b9d";
+
+    message.textContent =
+      "Enter an email and password first.";
+
+    return;
+  }
+
+  if (passwordValue.length < 6) {
+
+    message.style.color = "#ff6b9d";
+
+    message.textContent =
+      "Password must be at least 6 characters.";
+
+    return;
+  }
+
+  try {
+
+    await createUserWithEmailAndPassword(
+      auth,
+      emailValue,
+      passwordValue
+    );
+
+    message.style.color = "#54e5a8";
+
+    message.textContent =
+      "Account created!";
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 600);
+
+  } catch (error) {
+
+    message.style.color = "#ff6b9d";
+
+    if (error.code === "auth/email-already-in-use") {
+      message.textContent =
+        "This email already has an account.";
+    } else {
+      message.textContent =
+        "Could not create account.";
+    }
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
