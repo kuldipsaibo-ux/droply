@@ -27,8 +27,7 @@ async function getAmazonPrice(productUrl) {
       },
       body: JSON.stringify({
         asins: [productUrl],
-        marketplace: "in",
-        postalCode: "173212"
+        marketplace: "in"
       })
     }
   );
@@ -42,14 +41,55 @@ async function getAmazonPrice(productUrl) {
   }
 
   const data = JSON.parse(responseText);
-
   const item = data.items?.[0];
 
   if (!item || item.status !== "ok" || !item.price) {
     throw new Error("Could not get a current price.");
   }
 
-  return item.price.amount;
+  return {
+    price: item.price.amount,
+    title: item.title || "Amazon product",
+    url: item.url || productUrl
+  };
+}
+
+async function sendEmail(to, product, currentPrice, targetPrice) {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is missing.");
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      from: "Droply <onboarding@resend.dev>",
+      to: [to],
+      subject: "🚨 Droply: Price dropped!",
+      html: `
+        <h2>🚨 Price Drop!</h2>
+        <p><strong>${product.title}</strong></p>
+        <p>Current price: <strong>₹${currentPrice}</strong></p>
+        <p>Your target: <strong>₹${targetPrice}</strong></p>
+        <p><a href="${product.url}">View product</a></p>
+      `
+    })
+  });
+
+  const responseText = await response.text();
+
+  if (!response.ok) {
+    throw new Error(
+      `Resend error: ${response.status} - ${responseText}`
+    );
+  }
+
+  console.log("📧 Email sent successfully.");
 }
 
 async function checkAlerts() {
@@ -69,12 +109,24 @@ async function checkAlerts() {
     console.log("Target price:", alert.targetPrice);
 
     try {
-      const currentPrice = await getAmazonPrice(alert.productUrl);
+      const product = await getAmazonPrice(alert.productUrl);
 
-      console.log("Current price:", currentPrice);
+      console.log("Product:", product.title);
+      console.log("Current price:", product.price);
 
-      if (currentPrice <= Number(alert.targetPrice)) {
+      if (product.price <= Number(alert.targetPrice)) {
         console.log("🚨 PRICE DROP!");
+
+        if (alert.email) {
+          await sendEmail(
+            alert.email,
+            product,
+            product.price,
+            alert.targetPrice
+          );
+        } else {
+          console.log("⚠️ No email address saved for this alert.");
+        }
       } else {
         console.log("🟡 No price drop yet.");
       }
