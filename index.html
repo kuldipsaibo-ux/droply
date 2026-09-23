@@ -1185,6 +1185,8 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+const auth = getAuth(app);
+
 document
 .getElementById("setAlert")
 .addEventListener("click", async () => {
@@ -1238,6 +1240,7 @@ document
         productUrl: productUrl,
         targetPrice: Number(targetPrice),
         email: email,
+        userId: auth.currentUser.uid,
         createdAt: serverTimestamp(),
         status: "watching"
       }
