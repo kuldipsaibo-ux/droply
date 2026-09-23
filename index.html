@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Droply</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #111;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 35px 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin: 0;
+    }
+
+    .tagline {
+      color: #666;
+      margin-top: 8px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 18px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 18px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 22px;
+      border: 0;
+      border-radius: 10px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .success {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #e9f9ee;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Droply</h1>
+
+    <div class="tagline">
+      Get notified when prices drop.
+    </div>
+
+    <div class="card">
+
+      <label>Product URL</label>
+
+      <input
+        id="productUrl"
+        type="url"
+        placeholder="Paste product link"
+      >
+
+      <label>Alert me below</label>
+
+      <input
+        id="targetPrice"
+        type="number"
+        placeholder="₹ 5000"
+      >
+
+      <button onclick="createAlert()">
+        🔔 Create Price Alert
+      </button>
+
+      <div id="success" class="success">
+        ✅ Alert created!
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    function createAlert() {
+
+      const url =
+        document.getElementById("productUrl").value;
+
+      const price =
+        document.getElementById("targetPrice").value;
+
+      if (!url || !price) {
+        alert("Please enter the product link and target price.");
+        return;
+      }
+
+      document.getElementById("success").style.display = "block";
+
+      document.getElementById("productUrl").value = "";
+
+      document.getElementById("targetPrice").value = "";
+
+    }
+
+  </script>
+
+</body>
+</html>
