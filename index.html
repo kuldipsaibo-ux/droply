@@ -3,158 +3,723 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Droply - Price Alerts</title>
+
+  <title>Droply — Track Products. Get Price Alerts.</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 60px auto;
-      padding: 20px;
+      background:
+        radial-gradient(circle at 80% 15%, #35206b 0%, transparent 28%),
+        radial-gradient(circle at 10% 50%, #17104a 0%, transparent 30%),
+        #070b18;
+      color: white;
+      min-height: 100vh;
+    }
+
+    header {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(7,11,24,.75);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .tag {
+      width: 30px;
+      height: 24px;
+      background: linear-gradient(135deg,#7357ff,#b83dff);
+      border-radius: 7px 4px 7px 4px;
+      transform: rotate(-25deg);
+      position: relative;
+    }
+
+    .tag:after {
+      content: "";
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #070b18;
+      border-radius: 50%;
+      top: 6px;
+      right: 6px;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    nav a {
+      color: #bfc3d6;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .nav-button {
+      background: linear-gradient(90deg,#6555ff,#a63cff);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      max-width: 1150px;
+      margin: auto;
+      padding: 80px 25px 45px;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 55px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      color: #b991ff;
+      background: rgba(119,77,255,.12);
+      border: 1px solid rgba(137,98,255,.3);
+      padding: 9px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
     }
 
     h1 {
+      font-size: clamp(48px,7vw,76px);
+      line-height: .98;
+      margin: 0;
+      letter-spacing: -4px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg,#7864ff,#c04cff);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: #aeb3c7;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 590px;
+      margin: 25px 0;
+    }
+
+    .features {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+      color: #d9dbea;
+      font-size: 14px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .feature span {
+      color: #9c7cff;
+      font-size: 20px;
+    }
+
+    .tracker {
+      margin-top: 35px;
+      background: rgba(19,25,48,.82);
+      border: 1px solid rgba(126,143,190,.2);
+      box-shadow: 0 25px 80px rgba(0,0,0,.35);
+      padding: 25px;
+      border-radius: 22px;
+    }
+
+    .tabs {
+      display: flex;
+      background: #10162b;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 18px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px;
       text-align: center;
+      border-radius: 9px;
+      color: #9298ae;
+      font-size: 14px;
     }
 
-    input,
-    button {
+    .tab.active {
+      color: white;
+      background: linear-gradient(90deg,#6555ff,#814cff);
+    }
+
+    input {
       width: 100%;
-      padding: 14px;
+      padding: 16px;
       margin-top: 12px;
-      box-sizing: border-box;
-      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid #303958;
+      background: #0c1225;
+      color: white;
+      outline: none;
+      font-size: 15px;
     }
 
-    button {
+    input:focus {
+      border-color: #8066ff;
+      box-shadow: 0 0 0 3px rgba(128,102,255,.12);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .track-button {
+      width: 100%;
+      border: 0;
+      margin-top: 15px;
+      padding: 16px;
+      border-radius: 13px;
+      background: linear-gradient(90deg,#6655ff,#b23cff);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    #message {
-      margin-top: 20px;
+    .privacy {
       text-align: center;
+      color: #737b95;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+
+    .product-card {
+      background: linear-gradient(145deg,#151b34,#0c1122);
+      border: 1px solid rgba(126,143,190,.22);
+      border-radius: 28px;
+      padding: 22px;
+      transform: rotate(2deg);
+      box-shadow: 0 35px 90px rgba(0,0,0,.45);
+    }
+
+    .store {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .product-image {
+      height: 300px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle,#30394e 0%,#141a2b 55%,#0b1020 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 100px;
+    }
+
+    .product-name {
+      font-weight: 700;
+      margin-top: 18px;
+    }
+
+    .prices {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .current {
+      color: #58e6ad;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .old {
+      color: #747b91;
+      text-decoration: line-through;
+    }
+
+    .drop {
+      background: rgba(255,70,150,.15);
+      color: #ff63ae;
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .notification {
+      background: white;
+      color: #111827;
+      border-radius: 18px;
+      padding: 17px;
+      margin-top: -35px;
+      margin-left: -35px;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,.4);
+    }
+
+    .notification strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stores {
+      max-width: 1100px;
+      margin: 35px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stores-title {
+      color: #747c96;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 18px;
+    }
+
+    .store-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .store-pill {
+      padding: 12px 18px;
+      border: 1px solid #29314b;
+      background: rgba(18,24,45,.7);
+      border-radius: 12px;
+      color: #cdd1df;
+      font-weight: 600;
+    }
+
+    .how {
+      max-width: 1100px;
+      margin: 80px auto;
+      padding: 0 25px;
+    }
+
+    .section-title {
+      font-size: 35px;
+      margin-bottom: 35px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 18px;
+    }
+
+    .step {
+      padding: 25px;
+      background: rgba(16,23,44,.75);
+      border: 1px solid #252e49;
+      border-radius: 18px;
+    }
+
+    .step-number {
+      font-size: 30px;
+      color: #856bff;
+      font-weight: 800;
+    }
+
+    .step h3 {
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      color: #858da5;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    footer {
+      border-top: 1px solid #1b2339;
+      padding: 30px 7%;
+      display: flex;
+      justify-content: space-between;
+      color: #777f97;
+      font-size: 13px;
+    }
+
+    @media(max-width:800px) {
+      nav {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 50px;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .product-card {
+        transform: none;
+      }
+    }
+
+    @media(max-width:500px) {
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 10px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Droply</h1>
+<header>
+  <div class="logo">
+    <div class="tag"></div>
+    Droply
+  </div>
 
-  <p>Get notified when your product reaches your target price.</p>
-
-  <input
-    id="productUrl"
-    type="url"
-    placeholder="Paste Amazon product URL"
-  >
-
-  <input
-    id="targetPrice"
-    type="number"
-    placeholder="Target price (₹)"
-  >
-
-  <input
-    id="email"
-    type="email"
-    placeholder="Your email address"
-  >
-
-  <button id="setAlert">
-    Set Price Alert
-  </button>
-
-  <div id="message"></div>
-
-  <script type="module">
-
-    import { initializeApp } from
-      "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      serverTimestamp
-    } from
-      "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+  <nav>
+    <a href="#how">How it works</a>
+    <a href="#stores">Supported Stores</a>
+    <a href="#features">Features</a>
+    <a href="#">FAQ</a>
+    <a class="nav-button" href="#tracker">Track Now →</a>
+  </nav>
+</header>
 
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuQvRtusTqOmb_tA0xQm12VJPQQYnvzfA",
-      authDomain: "droply-fa6f6.firebaseapp.com",
-      projectId: "droply-fa6f6",
-      storageBucket: "droply-fa6f6.firebasestorage.app",
-      messagingSenderId: "993632750410",
-      appId: "1:993632750410:web:373d3d6399ad705d874fb3",
-      measurementId: "G-MQ7JRR824Q"
-    };
+<section class="hero">
+
+  <div>
+
+    <div class="badge">
+      ✦ TRACK PRICES. NOT JUST AMAZON.
+    </div>
+
+    <h1>
+      Better deals,<br>
+      <span class="gradient-text">happier you.</span>
+    </h1>
+
+    <p>
+      Track products from your favorite stores and get an email
+      when the price drops to your target.
+    </p>
+
+    <div class="features">
+      <div class="feature">
+        <span>ϟ</span> Instant alerts
+      </div>
+
+      <div class="feature">
+        <span>♢</span> Save money
+      </div>
+
+      <div class="feature">
+        <span>♡</span> No spam
+      </div>
+    </div>
 
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    <div class="tracker" id="tracker">
+
+      <div class="tabs">
+        <div class="tab active">Track a Product</div>
+        <div class="tab">My Alerts</div>
+      </div>
+
+      <input
+        id="productUrl"
+        type="url"
+        placeholder="🔗  Paste any product link"
+      >
+
+      <div class="input-row">
+
+        <input
+          id="targetPrice"
+          type="number"
+          placeholder="₹  Target price"
+        >
+
+        <input
+          id="email"
+          type="email"
+          placeholder="✉  Your email"
+        >
+
+      </div>
+
+      <button class="track-button" id="setAlert">
+        Start Tracking →
+      </button>
+
+      <div class="privacy">
+        🔒 We'll only use your email for price alerts.
+      </div>
+
+      <div id="message"></div>
+
+    </div>
+
+  </div>
 
 
-    document
-      .getElementById("setAlert")
-      .addEventListener("click", async () => {
+  <div>
 
-        const productUrl =
-          document.getElementById("productUrl").value.trim();
+    <div class="product-card">
 
-        const targetPrice =
-          document.getElementById("targetPrice").value.trim();
+      <div class="store">amazon.in</div>
 
-        const email =
-          document.getElementById("email").value.trim();
+      <div class="product-image">
+        🎧
+      </div>
 
-        const message =
-          document.getElementById("message");
+      <div class="product-name">
+        Wireless Noise Cancelling Headphones
+      </div>
 
+      <div class="prices">
+        <div class="current">₹8,999</div>
+        <div class="old">₹14,999</div>
+        <div class="drop">40% OFF</div>
+      </div>
 
-        if (!productUrl || !targetPrice || !email) {
-          message.textContent =
-            "Please enter the product URL, target price and email.";
+    </div>
 
-          return;
-        }
+    <div class="notification">
+      <strong>🏷️ Droply — Price dropped!</strong>
+      Your product is now below your target price.
+    </div>
 
+  </div>
 
-        try {
-
-          await addDoc(
-            collection(db, "priceAlerts"),
-            {
-              productUrl: productUrl,
-              targetPrice: Number(targetPrice),
-              email: email,
-              createdAt: serverTimestamp(),
-              status: "watching"
-            }
-          );
+</section>
 
 
-          message.textContent =
-            "✅ Price alert created!";
+<section class="stores" id="stores">
+
+  <div class="stores-title">
+    Supported stores
+  </div>
+
+  <div class="store-list">
+    <div class="store-pill">amazon</div>
+    <div class="store-pill">Flipkart</div>
+    <div class="store-pill">Myntra</div>
+    <div class="store-pill">AJIO</div>
+    <div class="store-pill">croma</div>
+    <div class="store-pill">Reliance Digital</div>
+    <div class="store-pill">NYKAA</div>
+    <div class="store-pill">TATA CLiQ</div>
+    <div class="store-pill">Meesho</div>
+    <div class="store-pill">+ More</div>
+  </div>
+
+</section>
 
 
-          document.getElementById("productUrl").value = "";
-          document.getElementById("targetPrice").value = "";
-          document.getElementById("email").value = "";
+<section class="how" id="how">
 
-        } catch (error) {
+  <div class="section-title">
+    How Droply works
+  </div>
 
-          console.error(error);
+  <div class="steps">
 
-          message.textContent =
-            "❌ Could not create alert.";
+    <div class="step">
+      <div class="step-number">01</div>
+      <h3>Paste the link</h3>
+      <p>
+        Copy a product URL from your favorite store.
+      </p>
+    </div>
 
-        }
+    <div class="step">
+      <div class="step-number">02</div>
+      <h3>Set your price</h3>
+      <p>
+        Tell Droply the price you are willing to pay.
+      </p>
+    </div>
 
-      });
+    <div class="step">
+      <div class="step-number">03</div>
+      <h3>We check</h3>
+      <p>
+        Droply regularly checks the product price.
+      </p>
+    </div>
 
-  </script>
+    <div class="step">
+      <div class="step-number">04</div>
+      <h3>Get alerted</h3>
+      <p>
+        You'll receive an email when your target is reached.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<footer>
+
+  <div>
+    <strong style="color:white;font-size:18px;">🏷️ Droply</strong>
+    &nbsp; Same Products. Lower Prices.
+  </div>
+
+  <div>
+    Made with ❤️ in India
+  </div>
+
+</footer>
+
+
+<script type="module">
+
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuQvRtusTqOmb_tA0xQm12VJPQQYnvzfA",
+    authDomain: "droply-fa6f6.firebaseapp.com",
+    projectId: "droply-fa6f6",
+    storageBucket: "droply-fa6f6.firebasestorage.app",
+    messagingSenderId: "993632750410",
+    appId: "1:993632750410:web:373d3d6399ad705d874fb3",
+    measurementId: "G-MQ7JRR824Q"
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+
+  document
+    .getElementById("setAlert")
+    .addEventListener("click", async () => {
+
+      const productUrl =
+        document.getElementById("productUrl").value.trim();
+
+      const targetPrice =
+        document.getElementById("targetPrice").value.trim();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const message =
+        document.getElementById("message");
+
+
+      if (!productUrl || !targetPrice || !email) {
+
+        message.textContent =
+          "Please enter the product link, target price and email.";
+
+        return;
+      }
+
+
+      try {
+
+        await addDoc(
+          collection(db, "priceAlerts"),
+          {
+            productUrl: productUrl,
+            targetPrice: Number(targetPrice),
+            email: email,
+            createdAt: serverTimestamp(),
+            status: "watching"
+          }
+        );
+
+
+        message.textContent =
+          "✅ Price alert created!";
+
+
+        document.getElementById("productUrl").value = "";
+        document.getElementById("targetPrice").value = "";
+        document.getElementById("email").value = "";
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          "❌ Could not create alert.";
+
+      }
+
+    });
+
+</script>
 
 </body>
 </html>
