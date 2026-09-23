@@ -1,14 +1,32 @@
-const targetPrice = 16300;
+const admin = require("firebase-admin");
 
-// Fake current price for testing
-const currentPrice = 15999;
+const serviceAccount = JSON.parse(
+  process.env.FIREBASE_SERVICE_ACCOUNT
+);
 
-console.log("Target price:", targetPrice);
-console.log("Current price:", currentPrice);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
-if (currentPrice <= targetPrice) {
-  console.log("🚨 PRICE DROP!");
-  console.log(`Price dropped to ₹${currentPrice}`);
-} else {
-  console.log("🟡 No price drop yet.");
+const db = admin.firestore();
+
+async function checkAlerts() {
+  const snapshot = await db.collection("priceAlerts").get();
+
+  console.log(`Found ${snapshot.size} price alert(s).`);
+
+  snapshot.forEach((doc) => {
+    const alert = doc.data();
+
+    console.log("Alert ID:", doc.id);
+    console.log("Product URL:", alert.productUrl);
+    console.log("Target price:", alert.targetPrice);
+    console.log("Status:", alert.status);
+    console.log("----------------------");
+  });
 }
+
+checkAlerts().catch((error) => {
+  console.error("Error:", error);
+  process.exit(1);
+});
