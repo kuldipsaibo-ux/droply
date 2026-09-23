@@ -1,477 +1,791 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Droply — Track Products. Get Price Alerts.</title>
+<title>Droply — Never miss a price drop</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background:
-        radial-gradient(circle at 80% 15%, #35206b 0%, transparent 28%),
-        radial-gradient(circle at 10% 50%, #17104a 0%, transparent 30%),
-        #070b18;
-      color: white;
-      min-height: 100vh;
-    }
+<style>
 
-    header {
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 7%;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(15px);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(7,11,24,.75);
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 25px;
-      font-weight: 800;
-    }
+html {
+  scroll-behavior: smooth;
+}
 
-    .tag {
-      width: 30px;
-      height: 24px;
-      background: linear-gradient(135deg,#7357ff,#b83dff);
-      border-radius: 7px 4px 7px 4px;
-      transform: rotate(-25deg);
-      position: relative;
-    }
+body {
+  margin: 0;
+  background: #050914;
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+}
 
-    .tag:after {
-      content: "";
-      position: absolute;
-      width: 5px;
-      height: 5px;
-      background: #070b18;
-      border-radius: 50%;
-      top: 6px;
-      right: 6px;
-    }
+body:before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 75% 15%, rgba(112,62,255,.18), transparent 28%),
+    radial-gradient(circle at 15% 55%, rgba(65,40,180,.12), transparent 28%);
+  z-index: -1;
+}
 
-    nav {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-    }
+/* NAV */
 
-    nav a {
-      color: #bfc3d6;
-      text-decoration: none;
-      font-size: 14px;
-    }
+.nav {
+  height: 72px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(5,9,20,.82);
+  backdrop-filter: blur(18px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
 
-    .nav-button {
-      background: linear-gradient(90deg,#6555ff,#a63cff);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 14px;
-      text-decoration: none;
-      font-weight: 700;
-    }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -.8px;
+}
 
-    .hero {
-      max-width: 1150px;
-      margin: auto;
-      padding: 80px 25px 45px;
-      display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 55px;
-      align-items: center;
-    }
+.logo-mark {
+  width: 31px;
+  height: 24px;
+  border-radius: 6px 3px 6px 3px;
+  background: linear-gradient(135deg,#6c58ff,#bf38ff);
+  transform: rotate(-28deg);
+  position: relative;
+}
 
-    .badge {
-      display: inline-block;
-      color: #b991ff;
-      background: rgba(119,77,255,.12);
-      border: 1px solid rgba(137,98,255,.3);
-      padding: 9px 14px;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
+.logo-mark:after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #101326;
+  border-radius: 50%;
+  top: 6px;
+  right: 6px;
+}
 
-    h1 {
-      font-size: clamp(48px,7vw,76px);
-      line-height: .98;
-      margin: 0;
-      letter-spacing: -4px;
-    }
+.logo-tagline {
+  font-family: "Caveat", cursive;
+  color: #aaa5bd;
+  font-size: 19px;
+  font-weight: 500;
+  margin-left: 8px;
+}
 
-    .gradient-text {
-      background: linear-gradient(90deg,#7864ff,#c04cff);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
 
-    .hero p {
-      color: #aeb3c7;
-      font-size: 18px;
-      line-height: 1.6;
-      max-width: 590px;
-      margin: 25px 0;
-    }
+.nav-links a {
+  color: #aeb3c7;
+  text-decoration: none;
+  font-size: 14px;
+}
 
-    .features {
-      display: flex;
-      gap: 22px;
-      flex-wrap: wrap;
-      color: #d9dbea;
-      font-size: 14px;
-    }
+.nav-links a:hover {
+  color: white;
+}
 
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
+.nav-button {
+  padding: 13px 22px;
+  border-radius: 14px;
+  color: white !important;
+  font-weight: 700;
+  background: linear-gradient(100deg,#6755ff,#a83cff);
+  box-shadow: 0 10px 35px rgba(121,66,255,.25);
+}
 
-    .feature span {
-      color: #9c7cff;
-      font-size: 20px;
-    }
+/* HERO */
 
-    .tracker {
-      margin-top: 35px;
-      background: rgba(19,25,48,.82);
-      border: 1px solid rgba(126,143,190,.2);
-      box-shadow: 0 25px 80px rgba(0,0,0,.35);
-      padding: 25px;
-      border-radius: 22px;
-    }
+.hero {
+  max-width: 1250px;
+  min-height: 710px;
+  margin: auto;
+  padding: 65px 30px 45px;
+  display: grid;
+  grid-template-columns: 48% 52%;
+  gap: 15px;
+  align-items: center;
+}
 
-    .tabs {
-      display: flex;
-      background: #10162b;
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 18px;
-    }
+.hero-left {
+  position: relative;
+  z-index: 3;
+}
 
-    .tab {
-      flex: 1;
-      padding: 12px;
-      text-align: center;
-      border-radius: 9px;
-      color: #9298ae;
-      font-size: 14px;
-    }
+.badge {
+  display: inline-flex;
+  padding: 9px 16px;
+  border: 1px solid rgba(142,91,255,.55);
+  background: rgba(93,55,220,.12);
+  color: #c09cff;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  margin-bottom: 23px;
+}
 
-    .tab.active {
-      color: white;
-      background: linear-gradient(90deg,#6555ff,#814cff);
-    }
+h1 {
+  font-size: clamp(52px,6vw,78px);
+  line-height: .94;
+  letter-spacing: -4px;
+  margin: 0;
+  font-weight: 800;
+}
 
-    input {
-      width: 100%;
-      padding: 16px;
-      margin-top: 12px;
-      border-radius: 12px;
-      border: 1px solid #303958;
-      background: #0c1225;
-      color: white;
-      outline: none;
-      font-size: 15px;
-    }
+.gradient {
+  background: linear-gradient(90deg,#7762ff,#c63cff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
 
-    input:focus {
-      border-color: #8066ff;
-      box-shadow: 0 0 0 3px rgba(128,102,255,.12);
-    }
+.underline {
+  position: relative;
+}
 
-    .input-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+.underline:after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 5px;
+  bottom: -8px;
+  height: 5px;
+  border-radius: 50%;
+  background: #8b5cff;
+  transform: rotate(-2deg);
+}
 
-    .track-button {
-      width: 100%;
-      border: 0;
-      margin-top: 15px;
-      padding: 16px;
-      border-radius: 13px;
-      background: linear-gradient(90deg,#6655ff,#b23cff);
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+.hero-description {
+  max-width: 580px;
+  margin: 28px 0 25px;
+  color: #b4b8c9;
+  font-size: 17px;
+  line-height: 1.55;
+}
 
-    .privacy {
-      text-align: center;
-      color: #737b95;
-      font-size: 12px;
-      margin-top: 15px;
-    }
+/* FEATURES */
 
-    #message {
-      text-align: center;
-      margin-top: 14px;
-      font-size: 14px;
-    }
+.feature-row {
+  display: flex;
+  gap: 26px;
+  margin-bottom: 28px;
+}
 
-    .product-card {
-      background: linear-gradient(145deg,#151b34,#0c1122);
-      border: 1px solid rgba(126,143,190,.22);
-      border-radius: 28px;
-      padding: 22px;
-      transform: rotate(2deg);
-      box-shadow: 0 35px 90px rgba(0,0,0,.45);
-    }
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #d9dbea;
+  font-size: 13px;
+}
 
-    .store {
-      color: #fff;
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 15px;
-    }
+.icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(112,80,255,.12);
+  border: 1px solid rgba(127,99,255,.25);
+}
 
-    .product-image {
-      height: 300px;
-      border-radius: 20px;
-      background:
-        radial-gradient(circle,#30394e 0%,#141a2b 55%,#0b1020 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 100px;
-    }
+.icon-circle svg {
+  width: 17px;
+  height: 17px;
+  stroke: #9b7cff;
+}
 
-    .product-name {
-      font-weight: 700;
-      margin-top: 18px;
-    }
+/* TRACKER */
 
-    .prices {
-      margin-top: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+.tracker {
+  width: 100%;
+  max-width: 585px;
+  padding: 17px;
+  border-radius: 20px;
+  background: rgba(13,20,39,.88);
+  border: 1px solid rgba(121,143,196,.22);
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.4),
+    inset 0 1px rgba(255,255,255,.03);
+}
 
-    .current {
-      color: #58e6ad;
-      font-size: 25px;
-      font-weight: 800;
-    }
+.tabs {
+  display: flex;
+  background: #0b1124;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
 
-    .old {
-      color: #747b91;
-      text-decoration: line-through;
-    }
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 11px;
+  color: #858da6;
+  font-size: 13px;
+}
 
-    .drop {
-      background: rgba(255,70,150,.15);
-      color: #ff63ae;
-      padding: 6px 9px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-    }
+.tab.active {
+  color: white;
+  border-radius: 9px;
+  background: linear-gradient(90deg,#6251ff,#8e45ff);
+}
 
-    .notification {
-      background: white;
-      color: #111827;
-      border-radius: 18px;
-      padding: 17px;
-      margin-top: -35px;
-      margin-left: -35px;
-      position: relative;
-      box-shadow: 0 20px 50px rgba(0,0,0,.4);
-    }
+.input {
+  width: 100%;
+  height: 49px;
+  padding: 0 15px;
+  border-radius: 11px;
+  border: 1px solid #2d3755;
+  background: #080f22;
+  color: white;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+}
 
-    .notification strong {
-      display: block;
-      margin-bottom: 5px;
-    }
+.input::placeholder {
+  color: #777f98;
+}
 
-    .stores {
-      max-width: 1100px;
-      margin: 35px auto;
-      padding: 20px;
-      text-align: center;
-    }
+.input:focus {
+  border-color: #8065ff;
+}
 
-    .stores-title {
-      color: #747c96;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 18px;
-    }
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
 
-    .store-list {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+.track-button {
+  border: 0;
+  width: 100%;
+  height: 51px;
+  margin-top: 11px;
+  border-radius: 11px;
+  color: white;
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(90deg,#6654ff,#ad3cff);
+  box-shadow: 0 8px 25px rgba(116,59,255,.25);
+}
 
-    .store-pill {
-      padding: 12px 18px;
-      border: 1px solid #29314b;
-      background: rgba(18,24,45,.7);
-      border-radius: 12px;
-      color: #cdd1df;
-      font-weight: 600;
-    }
+.privacy {
+  text-align: center;
+  margin-top: 11px;
+  color: #717b94;
+  font-size: 11px;
+}
 
-    .how {
-      max-width: 1100px;
-      margin: 80px auto;
-      padding: 0 25px;
-    }
+#message {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 13px;
+}
 
-    .section-title {
-      font-size: 35px;
-      margin-bottom: 35px;
-    }
+/* HERO VISUAL */
 
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 18px;
-    }
+.hero-visual {
+  position: relative;
+  height: 620px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .step {
-      padding: 25px;
-      background: rgba(16,23,44,.75);
-      border: 1px solid #252e49;
-      border-radius: 18px;
-    }
+.room {
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg,rgba(3,7,17,.8),rgba(10,10,25,.15)),
+    url("https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=85")
+    center/cover;
+  opacity: .72;
+}
 
-    .step-number {
-      font-size: 30px;
-      color: #856bff;
-      font-weight: 800;
-    }
+.room:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,rgba(8,10,25,.15),rgba(3,6,17,.82)),
+    radial-gradient(circle at 65% 20%,rgba(108,63,255,.35),transparent 35%);
+}
 
-    .step h3 {
-      margin-bottom: 8px;
-    }
+/* PRODUCT */
 
-    .step p {
-      color: #858da5;
-      line-height: 1.5;
-      font-size: 14px;
-    }
+.product {
+  width: 350px;
+  position: relative;
+  z-index: 3;
+  padding: 17px;
+  border-radius: 27px;
+  background: rgba(10,17,34,.91);
+  border: 1px solid rgba(135,148,197,.32);
+  transform: rotate(2deg);
+  box-shadow: 0 35px 90px rgba(0,0,0,.65);
+}
 
-    footer {
-      border-top: 1px solid #1b2339;
-      padding: 30px 7%;
-      display: flex;
-      justify-content: space-between;
-      color: #777f97;
-      font-size: 13px;
-    }
+.store-name {
+  font-size: 17px;
+  font-weight: 800;
+  padding: 4px 4px 13px;
+}
 
-    @media(max-width:800px) {
-      nav {
-        display: none;
-      }
+.amazon-smile {
+  display: inline-block;
+  color: #ffae31;
+  font-size: 13px;
+}
 
-      .hero {
-        grid-template-columns: 1fr;
-        padding-top: 50px;
-      }
+.product-photo {
+  height: 330px;
+  border-radius: 19px;
+  overflow: hidden;
+  background: #eef1f5;
+}
 
-      h1 {
-        letter-spacing: -2px;
-      }
+.product-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 
-      .input-row {
-        grid-template-columns: 1fr;
-      }
+.product-title {
+  font-weight: 700;
+  margin-top: 15px;
+  font-size: 16px;
+}
 
-      .steps {
-        grid-template-columns: 1fr 1fr;
-      }
+.price-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 9px;
+}
 
-      .product-card {
-        transform: none;
-      }
-    }
+.price {
+  font-size: 24px;
+  font-weight: 800;
+  color: #54e5a8;
+}
 
-    @media(max-width:500px) {
-      .steps {
-        grid-template-columns: 1fr;
-      }
+.old-price {
+  color: #70778c;
+  text-decoration: line-through;
+  font-size: 13px;
+}
 
-      footer {
-        flex-direction: column;
-        gap: 10px;
-      }
-    }
-  </style>
+.discount {
+  background: rgba(255,66,151,.15);
+  color: #ff62aa;
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* HANDWRITING */
+
+.annotation {
+  position: absolute;
+  z-index: 5;
+  font-family: "Caveat", cursive;
+  color: white;
+  font-size: 25px;
+  line-height: 1.05;
+}
+
+.annotation.one {
+  right: -10px;
+  top: 30px;
+  width: 150px;
+  transform: rotate(-5deg);
+}
+
+.arrow {
+  font-size: 40px;
+  display: block;
+  transform: rotate(25deg);
+}
+
+/* NOTIFICATION */
+
+.notification {
+  position: absolute;
+  z-index: 7;
+  left: 5px;
+  bottom: 55px;
+  width: 375px;
+  padding: 17px;
+  border-radius: 17px;
+  background: rgba(255,255,255,.97);
+  color: #101426;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+
+.notification-top {
+  display: flex;
+  justify-content: space-between;
+  color: #73788a;
+  font-size: 11px;
+  margin-bottom: 7px;
+}
+
+.notification-title {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.notification-text {
+  margin-top: 5px;
+  color: #53596b;
+  font-size: 13px;
+}
+
+.notification-price {
+  margin-top: 9px;
+  color: #694cff;
+  font-weight: 800;
+}
+
+/* STORES */
+
+.stores {
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 17px 5%;
+  background: rgba(7,12,27,.72);
+}
+
+.store-inner {
+  max-width: 1150px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.store-label {
+  width: 85px;
+  color: #778097;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.store-pill {
+  height: 44px;
+  padding: 0 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid #242d47;
+  background: #0d1427;
+  color: #d7d9e4;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* HOW */
+
+.how {
+  max-width: 1150px;
+  margin: auto;
+  padding: 80px 25px 90px;
+}
+
+.section-heading {
+  font-size: 36px;
+  margin: 0 0 35px;
+  letter-spacing: -1.5px;
+}
+
+.heading-line {
+  width: 150px;
+  height: 4px;
+  background: #785cff;
+  border-radius: 50%;
+  margin-top: 7px;
+  transform: rotate(-2deg);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 15px;
+}
+
+.step {
+  min-height: 190px;
+  padding: 22px;
+  border-radius: 17px;
+  background: linear-gradient(145deg,#10182e,#0a1021);
+  border: 1px solid #202b47;
+}
+
+.step-number {
+  color: #896dff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.step-icon {
+  width: 48px;
+  height: 48px;
+  margin: 15px 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(117,82,255,.12);
+  border: 1px solid rgba(117,82,255,.25);
+}
+
+.step-icon svg {
+  width: 23px;
+  height: 23px;
+  stroke: #9b7cff;
+}
+
+.step h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.step p {
+  margin: 0;
+  color: #7d869e;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* FOOTER */
+
+.footer {
+  border-top: 1px solid #1a2238;
+  padding: 28px 5%;
+  display: flex;
+  justify-content: space-between;
+  color: #747d95;
+  font-size: 12px;
+}
+
+.footer-logo {
+  color: white;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+/* MOBILE */
+
+@media(max-width:900px) {
+
+  .nav-links {
+    display: none;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 45px;
+  }
+
+  .hero-visual {
+    height: 570px;
+  }
+
+  .steps {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .store-inner {
+    overflow-x: auto;
+  }
+
+  .store-label {
+    flex-shrink: 0;
+  }
+}
+
+@media(max-width:600px) {
+
+  .logo-tagline {
+    display: none;
+  }
+
+  h1 {
+    font-size: 52px;
+  }
+
+  .feature-row {
+    gap: 13px;
+  }
+
+  .feature {
+    font-size: 11px;
+  }
+
+  .input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .tracker {
+    padding: 13px;
+  }
+
+  .hero-visual {
+    height: 490px;
+  }
+
+  .product {
+    width: 290px;
+  }
+
+  .product-photo {
+    height: 270px;
+  }
+
+  .notification {
+    width: 300px;
+    left: -5px;
+    bottom: 20px;
+  }
+
+  .annotation {
+    display: none;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+</style>
 </head>
+
 
 <body>
 
-<header>
+
+<!-- NAV -->
+
+<header class="nav">
+
   <div class="logo">
-    <div class="tag"></div>
+    <div class="logo-mark"></div>
     Droply
+    <span class="logo-tagline">Track Anything. Save More.</span>
   </div>
 
-  <nav>
+  <div class="nav-links">
     <a href="#how">How it works</a>
     <a href="#stores">Supported Stores</a>
-    <a href="#features">Features</a>
+    <a href="#how">Features</a>
     <a href="#">FAQ</a>
     <a class="nav-button" href="#tracker">Track Now →</a>
-  </nav>
+  </div>
+
 </header>
 
 
+<!-- HERO -->
+
 <section class="hero">
 
-  <div>
+
+  <div class="hero-left">
 
     <div class="badge">
-      ✦ TRACK PRICES. NOT JUST AMAZON.
+      ✦ PRICE ALERTS FOR ALL YOUR FAVORITE STORES
     </div>
 
     <h1>
-      Better deals,<br>
-      <span class="gradient-text">happier you.</span>
+      Never miss<br>
+      a <span class="gradient underline">price drop</span>
     </h1>
 
-    <p>
-      Track products from your favorite stores and get an email
-      when the price drops to your target.
+    <p class="hero-description">
+      Track any product from Amazon, Flipkart, Myntra and more.
+      Get an email when the price drops to your target.
     </p>
 
-    <div class="features">
+
+    <div class="feature-row">
+
       <div class="feature">
-        <span>ϟ</span> Instant alerts
+        <div class="icon-circle">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+        </div>
+        Instant alerts
       </div>
 
       <div class="feature">
-        <span>♢</span> Save money
+        <div class="icon-circle">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v10M9 10h6M9 14h6"/>
+          </svg>
+        </div>
+        Save money
       </div>
 
       <div class="feature">
-        <span>♡</span> No spam
+        <div class="icon-circle">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M20.8 8.7c0 5.5-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6z"/>
+          </svg>
+        </div>
+        100% free
       </div>
+
     </div>
 
+
+    <!-- TRACKER -->
 
     <div class="tracker" id="tracker">
 
@@ -481,20 +795,23 @@
       </div>
 
       <input
+        class="input"
         id="productUrl"
         type="url"
-        placeholder="🔗  Paste any product link"
+        placeholder="🔗  Paste any product link (Amazon, Flipkart, etc.)"
       >
 
       <div class="input-row">
 
         <input
+          class="input"
           id="targetPrice"
           type="number"
-          placeholder="₹  Target price"
+          placeholder="₹  Target price (₹)"
         >
 
         <input
+          class="input"
           id="email"
           type="email"
           placeholder="✉  Your email"
@@ -503,11 +820,11 @@
       </div>
 
       <button class="track-button" id="setAlert">
-        Start Tracking →
+        Start Tracking&nbsp; →
       </button>
 
       <div class="privacy">
-        🔒 We'll only use your email for price alerts.
+        🔒 We'll only use your email to send price alerts. No spam, ever.
       </div>
 
       <div id="message"></div>
@@ -517,31 +834,65 @@
   </div>
 
 
-  <div>
+  <!-- HERO PRODUCT -->
 
-    <div class="product-card">
+  <div class="hero-visual">
 
-      <div class="store">amazon.in</div>
+    <div class="room"></div>
 
-      <div class="product-image">
-        🎧
+    <div class="annotation one">
+      You set the price.<br>
+      We'll watch<br>
+      for you.
+      <span class="arrow">↙</span>
+    </div>
+
+
+    <div class="product">
+
+      <div class="store-name">
+        amazon<span class="amazon-smile">.in</span>
       </div>
 
-      <div class="product-name">
+      <div class="product-photo">
+        <img
+          src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=90"
+          alt="Wireless headphones"
+        >
+      </div>
+
+      <div class="product-title">
         Wireless Noise Cancelling Headphones
       </div>
 
-      <div class="prices">
-        <div class="current">₹8,999</div>
-        <div class="old">₹14,999</div>
-        <div class="drop">40% OFF</div>
+      <div class="price-line">
+        <div class="price">₹8,999</div>
+        <div class="old-price">₹14,990</div>
+        <div class="discount">40% OFF</div>
       </div>
 
     </div>
 
+
     <div class="notification">
-      <strong>🏷️ Droply — Price dropped!</strong>
-      Your product is now below your target price.
+
+      <div class="notification-top">
+        <span>🏷 Droply</span>
+        <span>now</span>
+      </div>
+
+      <div class="notification-title">
+        Price dropped! 🎉
+      </div>
+
+      <div class="notification-text">
+        Your tracked product is now below your target.
+      </div>
+
+      <div class="notification-price">
+        ₹8,999 &nbsp; • &nbsp; Target ₹9,000 →
+      </div>
+
     </div>
 
   </div>
@@ -549,13 +900,17 @@
 </section>
 
 
+<!-- STORES -->
+
 <section class="stores" id="stores">
 
-  <div class="stores-title">
-    Supported stores
-  </div>
+  <div class="store-inner">
 
-  <div class="store-list">
+    <div class="store-label">
+      Supported<br>
+      stores
+    </div>
+
     <div class="store-pill">amazon</div>
     <div class="store-pill">Flipkart</div>
     <div class="store-pill">Myntra</div>
@@ -564,160 +919,257 @@
     <div class="store-pill">Reliance Digital</div>
     <div class="store-pill">NYKAA</div>
     <div class="store-pill">TATA CLiQ</div>
-    <div class="store-pill">Meesho</div>
+    <div class="store-pill">meesho</div>
     <div class="store-pill">+ More</div>
+
   </div>
 
 </section>
 
+
+<!-- HOW IT WORKS -->
 
 <section class="how" id="how">
 
-  <div class="section-title">
+  <h2 class="section-heading">
     How Droply works
-  </div>
+    <div class="heading-line"></div>
+  </h2>
+
 
   <div class="steps">
 
+
     <div class="step">
+
       <div class="step-number">01</div>
+
+      <div class="step-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+          <path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.2 1.2"/>
+          <path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.2-1.2"/>
+        </svg>
+      </div>
+
       <h3>Paste the link</h3>
+
       <p>
-        Copy a product URL from your favorite store.
+        Copy any product URL from your favorite store.
       </p>
+
     </div>
 
+
     <div class="step">
+
       <div class="step-number">02</div>
-      <h3>Set your price</h3>
+
+      <div class="step-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+          <circle cx="12" cy="12" r="8"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v2M12 20v2M2 12h2M20 12h2"/>
+        </svg>
+      </div>
+
+      <h3>Set your target price</h3>
+
       <p>
-        Tell Droply the price you are willing to pay.
+        Tell us the price you want to pay.
       </p>
+
     </div>
 
+
     <div class="step">
+
       <div class="step-number">03</div>
-      <h3>We check</h3>
+
+      <div class="step-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+          <circle cx="10.5" cy="10.5" r="6.5"/>
+          <path d="m16 16 5 5"/>
+        </svg>
+      </div>
+
+      <h3>We'll check regularly</h3>
+
       <p>
-        Droply regularly checks the product price.
+        Droply monitors the price in the background.
       </p>
+
     </div>
 
+
     <div class="step">
+
       <div class="step-number">04</div>
-      <h3>Get alerted</h3>
+
+      <div class="step-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+          <path d="M10 21h4"/>
+        </svg>
+      </div>
+
+      <h3>Get an email</h3>
+
       <p>
-        You'll receive an email when your target is reached.
+        You'll be notified when the price drops.
       </p>
+
     </div>
+
 
   </div>
 
 </section>
 
 
-<footer>
+<!-- FOOTER -->
+
+<footer class="footer">
 
   <div>
-    <strong style="color:white;font-size:18px;">🏷️ Droply</strong>
-    &nbsp; Same Products. Lower Prices.
+    <span class="footer-logo">🏷 Droply</span>
+    &nbsp; Track Anything. Save More.
   </div>
 
   <div>
-    Made with ❤️ in India
+    FAQ &nbsp;&nbsp; Privacy &nbsp;&nbsp; Contact
+  </div>
+
+  <div>
+    Made with ♥ in India
   </div>
 
 </footer>
 
 
+<!-- FIREBASE -->
+
 <script type="module">
 
-  import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    serverTimestamp
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAuQvRtusTqOmb_tA0xQm12VJPQQYnvzfA",
+
+  authDomain: "droply-fa6f6.firebaseapp.com",
+
+  projectId: "droply-fa6f6",
+
+  storageBucket: "droply-fa6f6.firebasestorage.app",
+
+  messagingSenderId: "993632750410",
+
+  appId: "1:993632750410:web:373d3d6399ad705d874fb3",
+
+  measurementId: "G-MQ7JRR824Q"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+document
+.getElementById("setAlert")
+.addEventListener("click", async () => {
+
+
+  const productUrl =
+    document.getElementById("productUrl").value.trim();
+
+
+  const targetPrice =
+    document.getElementById("targetPrice").value.trim();
+
+
+  const email =
+    document.getElementById("email").value.trim();
+
+
+  const message =
+    document.getElementById("message");
+
+
+  if (!productUrl || !targetPrice || !email) {
+
+    message.style.color = "#ff6b9d";
+
+    message.textContent =
+      "Please enter the product link, target price and email.";
+
+    return;
+
   }
-    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAuQvRtusTqOmb_tA0xQm12VJPQQYnvzfA",
-    authDomain: "droply-fa6f6.firebaseapp.com",
-    projectId: "droply-fa6f6",
-    storageBucket: "droply-fa6f6.firebasestorage.app",
-    messagingSenderId: "993632750410",
-    appId: "1:993632750410:web:373d3d6399ad705d874fb3",
-    measurementId: "G-MQ7JRR824Q"
-  };
+  if (Number(targetPrice) <= 0) {
+
+    message.style.color = "#ff6b9d";
+
+    message.textContent =
+      "Please enter a valid target price.";
+
+    return;
+
+  }
 
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  try {
 
-
-  document
-    .getElementById("setAlert")
-    .addEventListener("click", async () => {
-
-      const productUrl =
-        document.getElementById("productUrl").value.trim();
-
-      const targetPrice =
-        document.getElementById("targetPrice").value.trim();
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const message =
-        document.getElementById("message");
-
-
-      if (!productUrl || !targetPrice || !email) {
-
-        message.textContent =
-          "Please enter the product link, target price and email.";
-
-        return;
+    await addDoc(
+      collection(db, "priceAlerts"),
+      {
+        productUrl: productUrl,
+        targetPrice: Number(targetPrice),
+        email: email,
+        createdAt: serverTimestamp(),
+        status: "watching"
       }
+    );
 
 
-      try {
+    message.style.color = "#54e5a8";
 
-        await addDoc(
-          collection(db, "priceAlerts"),
-          {
-            productUrl: productUrl,
-            targetPrice: Number(targetPrice),
-            email: email,
-            createdAt: serverTimestamp(),
-            status: "watching"
-          }
-        );
+    message.textContent =
+      "✓ Price alert created!";
 
 
-        message.textContent =
-          "✅ Price alert created!";
+    document.getElementById("productUrl").value = "";
+
+    document.getElementById("targetPrice").value = "";
+
+    document.getElementById("email").value = "";
 
 
-        document.getElementById("productUrl").value = "";
-        document.getElementById("targetPrice").value = "";
-        document.getElementById("email").value = "";
+  } catch (error) {
 
+    console.error(error);
 
-      } catch (error) {
+    message.style.color = "#ff6b9d";
 
-        console.error(error);
+    message.textContent =
+      "Something went wrong. Please try again.";
 
-        message.textContent =
-          "❌ Could not create alert.";
+  }
 
-      }
-
-    });
+});
 
 </script>
 
