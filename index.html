@@ -812,7 +812,7 @@ h1 {
     <a href="#stores">Supported Stores</a>
     <a href="#how">Features</a>
     <a href="#">FAQ</a>
-    <a href="login.html">Log in</a>
+    <a id="loginLink" href="login.html">Log in</a>
     <a class="nav-button" href="#tracker">Track Now →</a>
   </div>
 
@@ -1186,6 +1186,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+  document.getElementById("loginLink").textContent = "Dashboard";
+  document.getElementById("loginLink").href = "dashboard.html";
+      }
+});
 
 document
 .getElementById("setAlert")
