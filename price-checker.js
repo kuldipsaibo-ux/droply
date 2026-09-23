@@ -1,22 +1,27 @@
-// Droply Test Price Checker
-// This version uses fake prices.
-// It does NOT use your FetchLayer points.
+function checkPrice(alert, currentPrice) {
+  const targetPrice = Number(alert.targetPrice);
 
-function checkPrice(currentPrice, targetPrice) {
   if (currentPrice <= targetPrice) {
     return {
       triggered: true,
-      message: `🔥 Price dropped to ₹${currentPrice}! Your target was ₹${targetPrice}.`
+      message: `🔥 Price dropped to ₹${currentPrice}! Target: ₹${targetPrice}`
     };
   }
 
   return {
     triggered: false,
-    message: `Price is ₹${currentPrice}. Target is ₹${targetPrice}.`
+    message: `Still watching. Current: ₹${currentPrice} | Target: ₹${targetPrice}`
   };
 }
 
-// TEST
-const result = checkPrice(1999, 2200);
+// TEST ALERT
+const alert = {
+  targetPrice: 2200
+};
+
+// Fake current price for testing
+const currentPrice = 1999;
+
+const result = checkPrice(alert, currentPrice);
 
 console.log(result.message);
