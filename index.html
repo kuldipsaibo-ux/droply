@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Droply</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -31,15 +28,14 @@
 
     .tagline {
       color: #666;
-      margin-top: 8px;
-      margin-bottom: 30px;
+      margin: 8px 0 30px;
     }
 
     .card {
       background: white;
       padding: 22px;
       border-radius: 18px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+      box-shadow: 0 5px 20px rgba(0,0,0,.06);
     }
 
     label {
@@ -66,7 +62,6 @@
       color: white;
       font-size: 16px;
       font-weight: bold;
-      cursor: pointer;
     }
 
     .success {
@@ -76,73 +71,155 @@
       background: #e9f9ee;
       border-radius: 10px;
     }
+
+    .error {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #ffecec;
+      border-radius: 10px;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <h1>Droply</h1>
+  <h1>Droply</h1>
 
-    <div class="tagline">
-      Get notified when prices drop.
+  <div class="tagline">
+    Get notified when prices drop.
+  </div>
+
+  <div class="card">
+
+    <label>Product URL</label>
+
+    <input
+      id="productUrl"
+      type="url"
+      placeholder="Paste product link"
+    >
+
+    <label>Alert me below</label>
+
+    <input
+      id="targetPrice"
+      type="number"
+      placeholder="₹ 5000"
+    >
+
+    <button id="createButton">
+      🔔 Create Price Alert
+    </button>
+
+    <div id="success" class="success">
+      ✅ Price alert saved!
     </div>
 
-    <div class="card">
-
-      <label>Product URL</label>
-
-      <input
-        id="productUrl"
-        type="url"
-        placeholder="Paste product link"
-      >
-
-      <label>Alert me below</label>
-
-      <input
-        id="targetPrice"
-        type="number"
-        placeholder="₹ 5000"
-      >
-
-      <button onclick="createAlert()">
-        🔔 Create Price Alert
-      </button>
-
-      <div id="success" class="success">
-        ✅ Alert created!
-      </div>
-
+    <div id="error" class="error">
+      ❌ Could not save the alert.
     </div>
 
   </div>
 
-  <script>
+</div>
 
-    function createAlert() {
+
+<script type="module">
+
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+  import {
+    getFirestore,
+    collection,
+    addDoc
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+  const firebaseConfig = {
+
+    apiKey: "AIzaSyAuQvRtusTqOmb_tA0xQm12VJPQQYnvzfA",
+
+    authDomain: "droply-fa6f6.firebaseapp.com",
+
+    projectId: "droply-fa6f6",
+
+    storageBucket: "droply-fa6f6.firebasestorage.app",
+
+    messagingSenderId: "993632750410",
+
+    appId: "1:993632750410:web:373d3d6399ad705d874fb3"
+
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+
+  const db = getFirestore(app);
+
+
+  document
+    .getElementById("createButton")
+    .addEventListener("click", async function () {
 
       const url =
-        document.getElementById("productUrl").value;
+        document.getElementById("productUrl").value.trim();
 
-      const price =
+      const target =
         document.getElementById("targetPrice").value;
 
-      if (!url || !price) {
+
+      if (!url || !target) {
+
         alert("Please enter the product link and target price.");
+
         return;
+
       }
 
-      document.getElementById("success").style.display = "block";
 
-      document.getElementById("productUrl").value = "";
+      try {
 
-      document.getElementById("targetPrice").value = "";
+        await addDoc(
+          collection(db, "priceAlerts"),
+          {
+            productUrl: url,
+            targetPrice: Number(target),
+            createdAt: new Date().toISOString(),
+            status: "watching"
+          }
+        );
 
-    }
 
-  </script>
+        document.getElementById("success")
+          .style.display = "block";
+
+        document.getElementById("error")
+          .style.display = "none";
+
+        document.getElementById("productUrl").value = "";
+
+        document.getElementById("targetPrice").value = "";
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("error")
+          .style.display = "block";
+
+        document.getElementById("success")
+          .style.display = "none";
+
+      }
+
+    });
+
+</script>
 
 </body>
 </html>
