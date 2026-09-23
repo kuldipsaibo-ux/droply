@@ -812,6 +812,7 @@ h1 {
     <a href="#stores">Supported Stores</a>
     <a href="#how">Features</a>
     <a href="#">FAQ</a>
+    <a href="login.html">Log in</a>
     <a class="nav-button" href="#tracker">Track Now →</a>
   </div>
 
@@ -874,55 +875,6 @@ h1 {
     </div>
 
 
-<!-- AUTH -->
-
-<div class="auth-box" id="authBox">
-
-  <div class="auth-title">Welcome to Droply</div>
-
-  <div class="auth-subtitle">
-    Log in to save and manage your price alerts.
-  </div>
-
-  <input
-    class="input"
-    id="authEmail"
-    type="email"
-    placeholder="Email address"
-  >
-
-  <input
-    class="input"
-    id="authPassword"
-    type="password"
-    placeholder="Password"
-  >
-
-  <div class="auth-buttons">
-
-    <button id="loginBtn" class="auth-button">
-      Log in
-    </button>
-
-    <button id="signupBtn" class="auth-button secondary">
-      Create account
-    </button>
-
-  </div>
-
-  <div id="authMessage"></div>
-
-</div>
-
-<div class="user-box" id="userBox" style="display:none;">
-
-  <span id="userEmail"></span>
-
-  <button id="logoutBtn">
-    Log out
-  </button>
-
-</div>
 
     <!-- TRACKER -->
 
@@ -1232,103 +1184,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-
-const auth = getAuth(app);
-
-const loginBtn = document.getElementById("loginBtn");
-const signupBtn = document.getElementById("signupBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-
-const authEmail = document.getElementById("authEmail");
-const authPassword = document.getElementById("authPassword");
-
-const authBox = document.getElementById("authBox");
-const userBox = document.getElementById("userBox");
-const userEmail = document.getElementById("userEmail");
-const authMessage = document.getElementById("authMessage");
-
-
-signupBtn.addEventListener("click", async () => {
-
-  const email = authEmail.value.trim();
-  const password = authPassword.value;
-
-  if (!email || !password) {
-    authMessage.textContent = "Enter your email and password.";
-    return;
-  }
-
-  try {
-
-    await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    authMessage.textContent = "Account created!";
-
-  } catch (error) {
-
-    authMessage.textContent = error.message;
-
-  }
-
-});
-
-
-loginBtn.addEventListener("click", async () => {
-
-  const email = authEmail.value.trim();
-  const password = authPassword.value;
-
-  if (!email || !password) {
-    authMessage.textContent = "Enter your email and password.";
-    return;
-  }
-
-  try {
-
-    await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    authMessage.textContent = "Logged in!";
-
-  } catch (error) {
-
-    authMessage.textContent = error.message;
-
-  }
-
-});
-
-
-logoutBtn.addEventListener("click", async () => {
-
-  await signOut(auth);
-
-});
-
-
-onAuthStateChanged(auth, (user) => {
-
-  if (user) {
-
-    authBox.style.display = "none";
-    userBox.style.display = "flex";
-    userEmail.textContent = user.email;
-
-  } else {
-
-    authBox.style.display = "block";
-    userBox.style.display = "none";
-
-  }
-
-});
 
 document
 .getElementById("setAlert")
