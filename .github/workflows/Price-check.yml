@@ -16,5 +16,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install Firebase Admin
+        run: npm install firebase-admin
+
       - name: Run price checker
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: node check-price.js
