@@ -21,15 +21,62 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function loadAlerts() {
-  const snapshot = await getDocs(collection(db, "priceAlerts"));
+
+// Check whether a price has reached the user's target
+function checkPrice(alert, currentPrice) {
+
+  const targetPrice = Number(alert.targetPrice);
+
+  if (currentPrice <= targetPrice) {
+    return {
+      triggered: true,
+      message: `🔥 PRICE DROP! ₹${currentPrice} is below your target of ₹${targetPrice}`
+    };
+  }
+
+  return {
+    triggered: false,
+    message: `Watching — current ₹${currentPrice}, target ₹${targetPrice}`
+  };
+}
+
+
+// Load all saved alerts
+async function checkAllAlerts() {
+
+  const snapshot = await getDocs(
+    collection(db, "priceAlerts")
+  );
+
+  if (snapshot.empty) {
+    console.log("No price alerts found.");
+    return;
+  }
 
   snapshot.forEach((doc) => {
+
     const alert = doc.data();
 
-    console.log("Watching:", alert.productUrl);
-    console.log("Target price:", alert.targetPrice);
+    // TEMPORARY fake price.
+    // This does NOT use FetchLayer.
+    const fakeCurrentPrice = 1999;
+
+    const result = checkPrice(
+      alert,
+      fakeCurrentPrice
+    );
+
+    console.log("--------------------------------");
+    console.log("Product:", alert.productUrl);
+    console.log(result.message);
+
+    if (result.triggered) {
+      console.log("🔔 Notification should be sent here.");
+    }
+
   });
 }
 
-loadAlerts();
+
+// Start checker
+checkAllAlerts();
